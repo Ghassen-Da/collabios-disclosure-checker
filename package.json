@@ -1,0 +1,8 @@
+{
+  "name": "collabios-disclosure-checker",
+  "version": "1.0.0",
+  "description": "EU influencer marketing disclosure guidance",
+  "main": "index.js",
+  "author": "Ghassen Daoud",
+  "license": "MIT"
+}
