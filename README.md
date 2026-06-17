@@ -1,19 +1,17 @@
-# Collabios Disclosure Checker
+## OpenClaw Plugin
 
-A simple OpenClaw plugin that provides influencer marketing disclosure guidance for European campaigns.
+Collabios Disclosure Checker helps creators and brands understand influencer marketing disclosure requirements across European markets.
 
-## Features
+### Features
 
-- Country-specific disclosure guidance
-- EU influencer marketing compliance support
-- Simple API
+* Country-specific disclosure guidance
+* Influencer marketing compliance checks
+* Simple integration with OpenClaw
 
-## Website
+### Website
 
 https://collabios.com
 
-## About
+### Learn More
 
-Collabios helps brands and creators manage influencer campaigns across Europe.
-
-Learn more at https://collabios.com
+Collabios is a European influencer marketing platform that helps brands and creators collaborate across borders while navigating local compliance requirements.
