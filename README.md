@@ -1,4 +1,4 @@
-## OpenClaw Plugin
+## Collabios Plugin
 
 Collabios Disclosure Checker helps creators and brands understand influencer marketing disclosure requirements across European markets.
 
