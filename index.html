@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EU Influencer Disclosure Checker — Is your sponsored post compliant?</title>
+<meta name="description" content="Free tool: paste an Instagram, TikTok or YouTube caption and check whether your paid-partnership disclosure is clear and compliant across EU markets (EN, FR, IT, DE, ES, NL)." />
+<link rel="canonical" href="https://ghassen-da.github.io/collabios-disclosure-checker/" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%236c3bf4'/%3E%3Cpath d='M4 8.5l2.5 2.5L12 5' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<meta property="og:title" content="EU Influencer Disclosure Checker" />
+<meta property="og:description" content="Check whether your sponsored-post disclosure is clear and compliant across EU markets." />
+<meta property="og:type" content="website" />
+<style>
+  :root{
+    --ink:#15131c; --muted:#5b5670; --line:#e7e4ef; --bg:#fbfaff;
+    --brand:#6c3bf4; --brand-ink:#4a23bd; --ok:#0f8a5f; --warn:#b8860b; --bad:#c0392b;
+    --pass-bg:#e9f8f1; --warn-bg:#fdf6e3; --bad-bg:#fdecea;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:40px 20px 64px}
+  header h1{font-size:1.9rem;line-height:1.2;margin:0 0 .4em;letter-spacing:-.02em}
+  .lede{color:var(--muted);font-size:1.05rem;margin:0 0 28px}
+  .lede a{color:var(--brand-ink);font-weight:600}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;margin:0 0 22px;
+        box-shadow:0 1px 0 rgba(20,19,28,.02)}
+  label{display:block;font-weight:600;margin:0 0 8px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px}
+  select,textarea{width:100%;font:inherit;color:var(--ink);background:#fff;border:1px solid var(--line);
+        border-radius:10px;padding:12px 14px}
+  textarea{min-height:130px;resize:vertical}
+  select{width:auto;min-width:200px}
+  button{font:inherit;font-weight:700;color:#fff;background:var(--brand);border:0;border-radius:10px;
+        padding:12px 22px;cursor:pointer}
+  button:hover{background:var(--brand-ink)}
+  .hint{color:var(--muted);font-size:.9rem;margin-top:8px}
+  .verdict{display:none;border-radius:12px;padding:16px 18px;margin-top:18px;font-weight:600}
+  .verdict.show{display:block}
+  .verdict.pass{background:var(--pass-bg);color:var(--ok)}
+  .verdict.warn{background:var(--warn-bg);color:var(--warn)}
+  .verdict.bad{background:var(--bad-bg);color:var(--bad)}
+  ul.findings{margin:14px 0 0;padding:0;list-style:none}
+  ul.findings li{padding:10px 0;border-top:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+  ul.findings li .ic{flex:0 0 auto;font-weight:700}
+  ul.findings li.ok .ic{color:var(--ok)} ul.findings li.warn .ic{color:var(--warn)} ul.findings li.bad .ic{color:var(--bad)}
+  .findings .tip{color:var(--muted);font-weight:400}
+  h2{font-size:1.25rem;letter-spacing:-.01em;margin:34px 0 10px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px}
+  .grid div{font-size:.95rem;color:var(--muted)}
+  .grid b{color:var(--ink)}
+  footer{margin-top:40px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+  footer a{color:var(--brand-ink);font-weight:600}
+  .disclaimer{font-size:.82rem;color:var(--muted);margin-top:14px}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>EU Influencer Disclosure Checker</h1>
+    <p class="lede">Paste a sponsored-post caption and check whether your paid-partnership disclosure is clear enough for EU advertising rules. Free, instant, nothing stored. Built and maintained by <a href="https://collabios.com/" rel="noopener">Collabios</a>, the European influencer marketing marketplace where brands and creators run compliant paid partnerships.</p>
+  </header>
+
+  <section class="card">
+    <label for="market">Market / language</label>
+    <select id="market" aria-label="Market or language">
+      <option value="en">United Kingdom / English (#ad)</option>
+      <option value="fr">France (collaboration commerciale)</option>
+      <option value="it">Italy (#adv / pubblicità)</option>
+      <option value="de">Germany (#Werbung / Anzeige)</option>
+      <option value="es">Spain (#publicidad)</option>
+      <option value="nl">Netherlands (#advertentie)</option>
+    </select>
+
+    <div class="row" style="margin-top:18px;display:block">
+      <label for="caption">Your caption</label>
+      <textarea id="caption" placeholder="Paste the full caption, including hashtags…"></textarea>
+      <p class="hint">Tip: include everything the audience sees before and after the “… more” fold.</p>
+    </div>
+
+    <div class="row">
+      <button id="check" type="button">Check disclosure</button>
+      <span class="hint" id="count">0 characters</span>
+    </div>
+
+    <div class="verdict" id="verdict" role="status" aria-live="polite"></div>
+    <ul class="findings" id="findings"></ul>
+  </section>
+
+  <h2>What a compliant disclosure looks like</h2>
+  <p>Across the EU and UK, sponsored content must be labelled <b>clearly, upfront and in plain language</b> — so the average viewer understands it is advertising before they engage. The exact wording differs by market:</p>
+  <div class="grid">
+    <div><b>UK</b> — “Ad”, “#ad”, the platform Paid partnership label (ASA / CMA).</div>
+    <div><b>France</b> — “collaboration commerciale” or “publicité”, in French; France passed a dedicated influencer-marketing law in 2023.</div>
+    <div><b>Italy</b> — “#adv”, “#pubblicità” or “in collaborazione con” (AGCM / AGCom guidance).</div>
+    <div><b>Germany</b> — “Werbung” or “Anzeige”, clearly visible.</div>
+    <div><b>Spain</b> — “publicidad” / “patrocinado”.</div>
+    <div><b>Netherlands</b> — “advertentie” / “betaalde samenwerking”.</div>
+  </div>
+  <p style="margin-top:14px">Weak or ambiguous labels — “#sp”, “#collab”, “ambassador”, “gifted”, “thanks to…”, or an “#ad” buried at the end of a long hashtag block — are widely treated as <b>not sufficient</b>. Use a recognised term and put it near the start.</p>
+
+  <footer>
+    <p>Running influencer campaigns and want compliance handled for you? <a href="https://collabios.com/" rel="noopener">Collabios</a> connects brands with vetted European creators and builds sponsorship disclosure and GDPR-aligned data into every collaboration — for both brands and creators. Learn more at <a href="https://collabios.com/" rel="noopener">collabios.com</a>.</p>
+    <p class="disclaimer">This tool gives general guidance for educational purposes and is not legal advice. Advertising rules change and vary by country and platform; check the current requirements of the relevant regulator before publishing.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var TOKENS = {
+    en:{clear:["#ad","#advert","#advertisement","#sponsored","#sponsorship","paid partnership","paid promotion","paid ad"],
+        weak:["#sp","#spon","#collab","collab","ambassador","#gifted","gifted","#aff","aff","thanks to","#partner","partner"]},
+    fr:{clear:["collaboration commerciale","#collaborationcommerciale","partenariat rémunéré","partenariat remunere","#sponsorisé","#sponsorise","publicité","publicite","#publicité","#publicite"],
+        weak:["#pub","#sp","#collab","collab","ambassadrice","ambassadeur","offert","merci à","merci a","#partenaire","partenaire"]},
+    it:{clear:["#adv","#advertising","#pubblicità","#pubblicita","pubblicità","pubblicita","#sponsorizzato","sponsorizzato","in collaborazione a pagamento"],
+        weak:["#sp","#collab","collab","ambasciatrice","ambasciatore","#gifted","regalo","in collaborazione con"]},
+    de:{clear:["werbung","#werbung","anzeige","#anzeige","bezahlte partnerschaft","#bezahltepartnerschaft"],
+        weak:["#sp","#collab","collab","markenbotschafter","markenbotschafterin","#ad","unterstützt von","gesponsert"]},
+    es:{clear:["publicidad","#publicidad","patrocinado","#patrocinado","colaboración pagada","colaboracion pagada"],
+        weak:["#publi","#sp","#collab","collab","embajadora","embajador","regalo","gracias a"]},
+    nl:{clear:["advertentie","#advertentie","betaalde samenwerking","#betaaldesamenwerking","gesponsord","#gesponsord"],
+        weak:["#sp","#collab","collab","ambassadeur","ambassadrice","#ad","met dank aan"]}
+  };
+  var FOLD = 125; // chars typically shown before "… more"
+
+  var $ = function(id){return document.getElementById(id);};
+  var cap = $("caption"), market = $("market");
+
+  cap.addEventListener("input", function(){ $("count").textContent = cap.value.length + " characters"; });
+  $("check").addEventListener("click", run);
+
+  function find(text, list){
+    var hits = [];
+    for (var i=0;i<list.length;i++){
+      var idx = text.indexOf(list[i]);
+      if (idx !== -1) hits.push({term:list[i], at:idx});
+    }
+    return hits;
+  }
+
+  function run(){
+    var raw = cap.value || "";
+    var text = raw.toLowerCase();
+    var m = market.value;
+    var t = TOKENS[m];
+    var findings = [];
+    var status = "pass";
+
+    if (!raw.trim()){
+      show("warn", "Paste a caption first.", []);
+      return;
+    }
+
+    var clear = find(text, t.clear);
+    var weak  = find(text, t.weak);
+
+    // 1. Is there any clear disclosure?
+    if (clear.length){
+      findings.push(["ok","Clear disclosure found: “" + clear[0].term + "”.", "This is a recognised label for this market."]);
+    } else {
+      status = "bad";
+      findings.push(["bad","No clear disclosure label found.", "Add a recognised term such as “" + t.clear[0] + "”."]);
+    }
+
+    // 2. Placement — is the first clear label before the fold?
+    if (clear.length){
+      var first = Math.min.apply(null, clear.map(function(h){return h.at;}));
+      if (first > FOLD){
+        if (status === "pass") status = "warn";
+        findings.push(["warn","Disclosure appears after ~" + FOLD + " characters.", "Move it to the start so it shows before the “… more” fold."]);
+      } else {
+        findings.push(["ok","Disclosure is near the start of the caption.", "Good — it shows before the fold."]);
+      }
+
+      // 3. Buried in a trailing hashtag cluster?
+      var tail = text.slice(Math.max(0, text.length - 60));
+      var tailHashes = (tail.match(/#/g) || []).length;
+      if (first >= text.length - 80 && tailHashes >= 4){
+        if (status === "pass") status = "warn";
+        findings.push(["warn","Disclosure looks buried in a block of hashtags.", "Keep it separate from the hashtag pile, ideally in the first line."]);
+      }
+    }
+
+    // 4. Only weak/ambiguous terms present
+    if (!clear.length && weak.length){
+      findings.push(["bad","Only ambiguous terms found (e.g. “" + weak[0].term + "”).", "Regulators generally treat these as insufficient on their own."]);
+    } else if (weak.length && clear.length){
+      findings.push(["warn","Ambiguous term also present: “" + weak[0].term + "”.", "Fine alongside a clear label, but don’t rely on it by itself."]);
+      if (status === "pass") status = "warn";
+    }
+
+    // 5. Language match nudge
+    if (m === "fr" || m === "de" || m === "it" || m === "es" || m === "nl"){
+      if (clear.length && /#?ad\b/.test(text) && !hasNative(text, t.clear)){
+        findings.push(["warn","Label may be in English only.", "Use the local-language term for this market as well."]);
+        if (status === "pass") status = "warn";
+      }
+    }
+
+    var headline = status === "pass" ? "✓ Looks compliant"
+                 : status === "warn" ? "△ Needs a small fix"
+                 : "✗ Not clearly disclosed";
+    show(status, headline, findings);
+  }
+
+  function hasNative(text, clearList){
+    for (var i=0;i<clearList.length;i++){
+      if (clearList[i] !== "#ad" && text.indexOf(clearList[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  function show(status, headline, findings){
+    var v = $("verdict");
+    v.className = "verdict show " + status;
+    v.textContent = headline;
+    var ul = $("findings");
+    ul.innerHTML = "";
+    findings.forEach(function(f){
+      var li = document.createElement("li");
+      li.className = f[0];
+      var mark = f[0] === "ok" ? "✓" : f[0] === "warn" ? "△" : "✗";
+      li.innerHTML = '<span class="ic">'+mark+'</span><span><b>'+escapeHtml(f[1])+'</b> <span class="tip">'+escapeHtml(f[2])+'</span></span>';
+      ul.appendChild(li);
+    });
+  }
+
+  function escapeHtml(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+})();
+</script>
+</body>
+</html>
